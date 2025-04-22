@@ -8,25 +8,25 @@
     <script src="https://unpkg.com/aframe-gps-camera@1.7.0/dist/aframe-gps-camera.min.js"></script>
   </head>
   <body style="margin: 0; overflow: hidden;">
-    <a-scene
-      vr-mode-ui="enabled: false"
-      embedded
-      arjs="sourceType: webcam; videoTexture: true; debugUIEnabled: false;"
-    >
-      <a-camera
-        id="camera1"
-        look-controls-enabled="false"
-        arjs-device-orientation-controls="smoothingFactor: 0.1"
-        gps-new-camera="gpsMinDistance: 5; positionMinAccuracy: 100"
-      ></a-camera>
+   <a-scene
+  vr-mode-ui="enabled: false"
+  embedded
+  arjs="sourceType: webcam; debugUIEnabled: false;"
+>
+  <a-camera
+    id="camera1"
+    look-controls-enabled="false"
+    arjs-device-orientation-controls="smoothingFactor: 0.1"
+    gps-new-camera="gpsMinDistance: 5; positionMinAccuracy: 100"
+  ></a-camera>
 
-      <a-entity
-        gltf-model="LogoCelsiaGLB3.glb"
-        gps-new-entity-place="latitude: 3.3406341764091314; longitude: -76.5295076545049"
-        position="0 0 0"
-        scale="1 1 1"
-        look-at="[gps-new-camera]"  <!-- Esto hace que siempre mire hacia el usuario -->
-      ></a-entity>
-    </a-scene>
+  <a-entity
+    gltf-model="LogoCelsiaGLB3.glb"
+    gps-new-entity-place="latitude: 3.3406341764091314; longitude: -76.5295076545049"
+    position="0 0 0"
+    scale="1 1 1"
+    look-at="[gps-new-camera]"
+  ></a-entity>
+</a-scene>
   </body>
 </html>
