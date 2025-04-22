@@ -1,34 +1,59 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
   <head>
     <meta charset="utf-8" />
-    <title>AR GPS Modelo 3D</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no"/>
-    <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/gh/AR-js-org/AR.js@3.4.5/aframe/build/aframe-ar.min.js"></script>
+    <title>AR.js GPS Location-based Example</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+
+    <!-- A-Frame -->
+    <script src="https://aframe.io/releases/1.4.2/aframe.min.js"></script>
+    <!-- AR.js with GPS support -->
+    <script src="https://cdn.jsdelivr.net/gh/AR-js-org/AR.js/aframe/build/aframe-ar-nft-location.min.js"></script>
+
+    <style>
+      html, body {
+        margin: 0;
+        padding: 0;
+        overflow: hidden;
+        background: transparent;
+        width: 100%;
+        height: 100%;
+      }
+
+      canvas {
+        display: block;
+      }
+
+      .a-loader, .arjs-debugUI {
+        display: none !important;
+      }
+    </style>
   </head>
-  <body style="margin: 0; overflow: hidden;">
+
+  <body>
     <a-scene
-      vr-mode-ui="enabled: false"
-      renderer="logarithmicDepthBuffer: true;"
       embedded
+      vr-mode-ui="enabled: false"
       arjs="sourceType: webcam; videoTexture: true; debugUIEnabled: false;"
+      renderer="antialias: true; alpha: true"
     >
-      <!-- Cámara con GPS y control de suavizado -->
+      <!-- Cámara con GPS y suavizado de movimiento -->
       <a-camera
-        gps-new-camera="gpsMinDistance: 5; positionMinAccuracy: 100"
-        arjs-device-orientation-controls="smoothingFactor: 0.1"
+        gps-new-camera="gpsMinDistance: 5"
         look-controls-enabled="false"
+        arjs-device-orientation-controls="smoothingFactor: 0.1"
       ></a-camera>
 
-      <!-- Modelo 3D colocado en ubicación geográfica -->
+      <!-- Modelo 3D posicionado por GPS -->
       <a-entity
-        gltf-model="LogoCelsiaGLB3.glb"
-        gps-new-entity-place="latitude: 3.3406341764091314; longitude: -76.5295076545049"
+        gltf-model="modelos/modelo.glb"
+        gps-new-entity-place="latitude: 3.340653727970847; longitude: -76.52938222428578"
         position="0 0 0"
-        scale="2 2 2"
-        look-at="[gps-new-camera]"
+        scale="3 3 3"
       ></a-entity>
+    </a-scene>
+  </body>
+</html>
     </a-scene>
   </body>
 </html>
