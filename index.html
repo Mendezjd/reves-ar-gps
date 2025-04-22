@@ -3,24 +3,53 @@
   <head>
     <title>AR GPS Modelo 3D</title>
     <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
     <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
     <script src="https://cdn.jsdelivr.net/gh/AR-js-org/AR.js/aframe/build/aframe-ar-nft.min.js"></script>
     <script src="https://unpkg.com/aframe-gps-camera@1.7.0/dist/aframe-gps-camera.min.js"></script>
   </head>
+
   <body style="margin: 0; overflow: hidden;">
     <a-scene
       vr-mode-ui="enabled: false"
       embedded
+      renderer="logarithmicDepthBuffer: true;"
       arjs="sourceType: webcam; gpsMinAccuracy: 100; debugUIEnabled: false;"
     >
+      <!-- Cámara con GPS -->
       <a-camera gps-camera rotation-reader></a-camera>
 
+      <!-- Modelo 3D en coordenadas GPS -->
       <a-entity
+        id="modelo"
         gltf-model="LogoCelsiaGLB3.glb"
         gps-entity-place="latitude: 3.3406341764091314; longitude: -76.5295076545049;"
         scale="1 1 1"
-        position="0 0 0"
+        rotation="0 180 0"
+        visible="false"
+        animation-mixer
       ></a-entity>
+
+      <!-- Mensaje de carga -->
+      <a-text
+        id="mensaje"
+        value="Cargando ubicación GPS..."
+        position="0 2 -5"
+        align="center"
+        look-at="[gps-camera]"
+      ></a-text>
     </a-scene>
+
+    <script>
+      // Mostrar el modelo solo cuando el GPS tenga una posición válida
+      document.querySelector("[gps-camera]").addEventListener("gps-camera-update-position", () => {
+        const modelo = document.getElementById("modelo");
+        const mensaje = document.getElementById("mensaje");
+        if (modelo && mensaje) {
+          modelo.setAttribute("visible", "true");
+          mensaje.setAttribute("visible", "false");
+        }
+      });
+    </script>
   </body>
 </html>
