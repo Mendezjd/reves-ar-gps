@@ -1,49 +1,27 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
   <head>
+    <title>AR.js - Modelo GLB con GPS</title>
     <meta charset="utf-8" />
-    <title>AR GPS Modelo 3D</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no"/>
     <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/gh/AR-js-org/AR.js@3.4.5/aframe/build/aframe-ar.min.js"></script>
-    <style>
-      video {
-        position: fixed !important;
-        top: 0 !important;
-        left: 0 !important;
-        width: 100% !important;
-        height: 100% !important;
-        object-fit: cover !important;
-        z-index: -1 !important;
-      }
-      canvas {
-        position: fixed !important;
-        top: 0 !important;
-        left: 0 !important;
-      }
-    </style>
+    <script src="https://cdn.jsdelivr.net/gh/AR-js-org/AR.js/aframe/build/aframe-ar.min.js"></script>
   </head>
   <body style="margin: 0; overflow: hidden;">
     <a-scene
       vr-mode-ui="enabled: false"
-      renderer="logarithmicDepthBuffer: true;"
       embedded
-      arjs="sourceType: environment; videoTexture: true; debugUIEnabled: false;"
+      arjs="sourceType: webcam; gpsMinAccuracy: 100; trackingMethod: best; debugUIEnabled: false;"
     >
-      <!-- Cámara con GPS y control de suavizado -->
-      <a-camera
-        gps-new-camera="gpsMinDistance: 5; positionMinAccuracy: 100"
-        arjs-device-orientation-controls="smoothingFactor: 0.1"
-        look-controls-enabled="false"
-      ></a-camera>
+      <!-- Cámara con GPS -->
+      <a-camera gps-camera rotation-reader></a-camera>
 
-      <!-- Modelo 3D en coordenadas de prueba -->
-      <a-entity
-        gltf-model="LogoCelsiaGLB3.glb"
-        gps-new-entity-place="latitude: 0; longitude: 0"
-        position="0 0 0"
+      <!-- Modelo GLB en ubicación GPS -->
+      <a-entity 
+        gltf-model="https://tusitio.com/modelos/LogoCelsiaGLB3.glb"
+        gps-entity-place="latitude: 3.3425; longitude: -76.5286;" 
         scale="5 5 5"
-        look-at="[gps-new-camera]"
+        animation-mixer
       ></a-entity>
     </a-scene>
   </body>
