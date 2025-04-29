@@ -1,27 +1,25 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>AR.js - Modelo GLB con GPS</title>
+    <title>AR GPS Modelo 3D</title>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no"/>
     <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/gh/AR-js-org/AR.js/aframe/build/aframe-ar.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/AR-js-org/AR.js/aframe/build/aframe-ar-nft.min.js"></script>
+    <script src="https://unpkg.com/aframe-gps-camera@1.7.0/dist/aframe-gps-camera.min.js"></script>
   </head>
   <body style="margin: 0; overflow: hidden;">
     <a-scene
       vr-mode-ui="enabled: false"
       embedded
-      arjs="sourceType: webcam; gpsMinAccuracy: 100; trackingMethod: best; debugUIEnabled: false;"
+      arjs="sourceType: webcam; gpsMinAccuracy: 100; debugUIEnabled: false;"
     >
-      <!-- Cámara con GPS -->
       <a-camera gps-camera rotation-reader></a-camera>
 
-      <!-- Modelo GLB en ubicación GPS -->
-      <a-entity 
-        gltf-model="https://tusitio.com/modelos/LogoCelsiaGLB3.glb"
-        gps-entity-place="latitude: 3.3425; longitude: -76.5286;" 
-        scale="5 5 5"
-        animation-mixer
+      <a-entity
+        gltf-model="LogoCelsiaGLB3.glb"
+        gps-entity-place="latitude: 3.3425; longitude: -76.5286;"
+        scale="1 1 1"
+        position="0 0 0"
       ></a-entity>
     </a-scene>
   </body>
