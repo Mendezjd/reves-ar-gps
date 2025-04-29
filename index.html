@@ -3,23 +3,43 @@
   <head>
     <title>AR GPS Modelo 3D</title>
     <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    
+    <!-- A-Frame y librerías AR.js y GPS -->
     <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
     <script src="https://cdn.jsdelivr.net/gh/AR-js-org/AR.js/aframe/build/aframe-ar-nft.min.js"></script>
     <script src="https://unpkg.com/aframe-gps-camera@1.7.0/dist/aframe-gps-camera.min.js"></script>
   </head>
+
   <body style="margin: 0; overflow: hidden;">
     <a-scene
       vr-mode-ui="enabled: false"
       embedded
       arjs="sourceType: webcam; gpsMinAccuracy: 100; debugUIEnabled: false;"
     >
+      <!-- Cámara con GPS -->
       <a-camera gps-camera rotation-reader></a-camera>
 
+      <!-- Modelo 3D en coordenadas GPS -->
       <a-entity
         gltf-model="LogoCelsiaGLB3.glb"
         gps-entity-place="latitude: 3.3425; longitude: -76.5286;"
         scale="1 1 1"
       ></a-entity>
     </a-scene>
+
+    <!-- Consola para depuración de GPS -->
+    <div id="debug" style="position: absolute; top: 10px; left: 10px; background: white; padding: 10px; font-size: 12px; z-index: 1000;">
+      Esperando señal GPS...
+    </div>
+
+    <script>
+      window.addEventListener('gps-camera-update-position', (e) => {
+        const lat = e.detail.position.latitude.toFixed(5);
+        const lon = e.detail.position.longitude.toFixed(5);
+        document.getElementById('debug').innerText = `GPS activo:\nLat: ${lat}\nLon: ${lon}`;
+        console.log('GPS position updated:', e.detail.position);
+      });
+    </script>
   </body>
 </html>
