@@ -6,13 +6,29 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no"/>
     <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
     <script src="https://cdn.jsdelivr.net/gh/AR-js-org/AR.js@3.4.5/aframe/build/aframe-ar.min.js"></script>
+    <style>
+      video {
+        position: fixed !important;
+        top: 0 !important;
+        left: 0 !important;
+        width: 100% !important;
+        height: 100% !important;
+        object-fit: cover !important;
+        z-index: -1 !important;
+      }
+      canvas {
+        position: fixed !important;
+        top: 0 !important;
+        left: 0 !important;
+      }
+    </style>
   </head>
   <body style="margin: 0; overflow: hidden;">
     <a-scene
       vr-mode-ui="enabled: false"
       renderer="logarithmicDepthBuffer: true;"
       embedded
-      arjs="sourceType: webcam; videoTexture: true; debugUIEnabled: false;"
+      arjs="sourceType: environment; videoTexture: true; debugUIEnabled: false;"
     >
       <!-- Cámara con GPS y control de suavizado -->
       <a-camera
@@ -21,12 +37,12 @@
         look-controls-enabled="false"
       ></a-camera>
 
-      <!-- Modelo 3D colocado en ubicación geográfica -->
+      <!-- Modelo 3D en coordenadas de prueba -->
       <a-entity
         gltf-model="LogoCelsiaGLB3.glb"
-        gps-new-entity-place="latitude: 3.3425143; longitude: -76.5286579"
+        gps-new-entity-place="latitude: 0; longitude: 0"
         position="0 0 0"
-        scale="3 3 3"
+        scale="5 5 5"
         look-at="[gps-new-camera]"
       ></a-entity>
     </a-scene>
