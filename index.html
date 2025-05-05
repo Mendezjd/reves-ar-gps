@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>AR GPS con Fijación</title>
+    <title>AR GPS con Modelo GLB</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
     <script src="https://cdn.jsdelivr.net/gh/AR-js-org/AR.js/aframe/build/aframe-ar-nft.min.js"></script>
@@ -13,40 +13,16 @@
       embedded
       arjs="sourceType: webcam; debugUIEnabled: false;"
     >
-      <!-- Cámara GPS con mejor precisión -->
+      <!-- Cámara con GPS y precisión mínima -->
       <a-camera gps-camera="minAccuracy: 100" rotation-reader></a-camera>
 
-      <!-- Modelo con evento de "fijar" -->
-      <a-entity id="modelo"
+      <!-- Modelo GLB -->
+      <a-entity
         gltf-model="LogoCelsiaGLB3.glb"
         gps-entity-place="latitude: 3.3406339167214085; longitude: -76.52942168837964;"
-        scale="0.1 0.1 0.1"
+        scale="0.2 0.2 0.2"
         rotation="0 180 0"
-        visible="false"
       ></a-entity>
-
-      <!-- Caja para mostrar como referencia -->
-      <a-box id="marcador"
-        color="blue"
-        depth="1"
-        height="1"
-        width="1"
-        gps-entity-place="latitude: 3.3406339167214085; longitude: -76.52942168837964;"
-      ></a-box>
     </a-scene>
-
-    <script>
-      // Cuando el usuario toca el marcador (la caja), se muestra el modelo y se oculta la caja
-      document.addEventListener("DOMContentLoaded", () => {
-        const caja = document.querySelector("#marcador");
-        const modelo = document.querySelector("#modelo");
-
-        caja.addEventListener("click", () => {
-          modelo.setAttribute("visible", "true");
-          caja.setAttribute("visible", "false");
-        });
-      });
-    </script>
   </body>
 </html>
-
