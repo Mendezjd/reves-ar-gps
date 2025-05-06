@@ -2,24 +2,29 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <title>Prueba AR con marcador</title>
+    <title>Prueba AR con coordenadas GPS</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no"/>
     <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
     <script src="https://cdn.jsdelivr.net/gh/AR-js-org/AR.js@3.4.5/aframe/build/aframe-ar.min.js"></script>
   </head>
   <body style="margin: 0; overflow: hidden;">
-    <a-scene embedded arjs>
-      <!-- Marcador con modelo GLB -->
-      <a-marker type="pattern" url="celsia1.patt">
-        <a-gltf-model 
-          src="LogoCelsiaGLB3.glb"
-          position="0 0 0"
-          scale="0.2 0.2 0.2"
-          rotation="0 0 0">
-        </a-gltf-model>
-      </a-marker>
+    <a-scene
+      embedded
+      arjs="sourceType: webcam; gpsMinAccuracy: 2;"
+      vr-mode-ui="enabled: false"
+      renderer="logarithmicDepthBuffer: true;"
+    >
+      <!-- Modelo GLB en coordenadas GPS -->
+      <a-entity 
+        gps-entity-place="latitude: 3.3425; longitude: -76.5286;" 
+        gltf-model="modelo.glb" 
+        scale="0.5 0.5 0.5"
+        rotation="0 180 0"
+        >
+      </a-entity>
 
-      <!-- Cámara -->
-      <a-entity camera></a-entity>
+      <!-- Cámara con GPS -->
+      <a-camera gps-camera rotation-reader></a-camera>
     </a-scene>
   </body>
 </html>
