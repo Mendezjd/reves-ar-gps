@@ -1,43 +1,41 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>MindAR Imagen AR</title>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+    <title>AR con imagen marcador (MindAR)</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     
-    <!-- MindAR + A-Frame -->
-    <script src="https://cdn.jsdelivr.net/npm/aframe@1.2.0/dist/aframe.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.1.4/dist/mindar-image-aframe.prod.js"></script>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/mind-ar@1.1.4/dist/mindar-image.prod.css" />
-
+    <!-- A-Frame -->
+    <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
+    
+    <!-- MindAR para A-Frame -->
+    <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.1.4/dist/aframe/mindar-aframe.prod.js"></script>
+    
     <style>
       body { margin: 0; overflow: hidden; }
-      canvas, video { position: absolute; top: 0; left: 0; }
+      canvas { position: absolute; top: 0; left: 0; }
     </style>
   </head>
-
   <body>
-    <div id="ar-container">
-      <a-scene 
-        mindar-image="imageTargetSrc: target.mind; autoStart: true;" 
-        color-space="sRGB" 
-        embedded 
-        renderer="colorManagement: true; physicallyCorrectLights: true;"
-        device-orientation-permission-ui="enabled: true"
-        vr-mode-ui="enabled: false"
-        loading-screen="enabled: false">
+    <a-scene mindar-image="imageTargetSrc: target.mind; autoStart: true;" 
+             embedded 
+             color-space="sRGB"
+             renderer="colorManagement: true, physicallyCorrectLights"
+             vr-mode-ui="enabled: false"
+             device-orientation-permission-ui="enabled: true"
+    >
+      <!-- Cámara AR -->
+      <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
 
-        <a-assets>
-          <a-asset-item id="model" src="LogoCelsiaGLB3.glb"></a-asset-item>
-        </a-assets>
-
-        <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
-
-        <a-entity mindar-image-target="targetIndex: 0">
-          <a-gltf-model src="#model" position="0 0 0" rotation="0 0 0" scale="0.1 0.1 0.1"></a-gltf-model>
-        </a-entity>
-        
-      </a-scene>
-    </div>
+      <!-- Marcador -->
+      <a-entity mindar-image-target="targetIndex: 0">
+        <!-- Tu modelo GLB -->
+        <a-gltf-model
+          src="LogoCelsiaGLB3.glb"
+          scale="0.2 0.2 0.2"
+          position="0 0 0"
+          rotation="0 0 0"
+        ></a-gltf-model>
+      </a-entity>
+    </a-scene>
   </body>
 </html>
