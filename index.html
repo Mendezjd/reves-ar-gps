@@ -1,30 +1,73 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <title>AR Experience with Coordinates</title>
-    <script src="https://aframe.io/releases/1.3.0/aframe.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/ar.js"></script>
-  </head>
-  <body style="margin: 0; overflow: hidden;">
-    <!-- AR Scene -->
-    <a-scene
-      vr-mode-ui="enabled: false"
-      embedded
-      arjs="sourceType: webcam; debugUIEnabled: false;"
-    >
-      <!-- GPS Camera -->
-      <a-camera
-        gps-camera
-        rotation-reader
-        position="0 0 0"
-      ></a-camera>
+<head>
+  <title>AR GPS con Flecha</title>
+  <script src="https://aframe.io/releases/1.3.0/aframe.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/ar.js@3.4.2/aframe/build/aframe-ar.min.js"></script>
+</head>
+<body style="margin: 0; overflow: hidden;">
+  <a-scene
+    vr-mode-ui="enabled: false"
+    embedded
+    arjs="sourceType: webcam; debugUIEnabled: false;"
+  >
+    <!-- Cámara con GPS -->
+    <a-camera gps-camera rotation-reader></a-camera>
 
-      <!-- 3D Model at Specific Coordinates -->
-      <a-entity
-        gps-entity-place="latitude: 3.340616; longitude: -76.529395" position="0 1021.55 0"
-        gltf-model="LogoCelsiaGLB3.glb"
-        scale="1 1 1"
-      ></a-entity>
-    </a-scene>
-  </body>
+    <!-- Modelo en coordenadas GPS -->
+    <a-entity
+      id="modelo"
+      gps-entity-place="latitude: 3.340616; longitude: -76.529395"
+      gltf-model="LogoCelsiaGLB3.glb"
+      scale="0.5 0.5 0.5"
+      position="0 1022 0"
+    ></a-entity>
+
+    <!-- Flecha indicadora (apunta al modelo) -->
+    <a-entity
+      id="flecha"
+      position="0 0 -2"
+      geometry="primitive: cone; radiusBottom: 0.2; radiusTop: 0.0; height: 0.5"
+      material="color: red"
+      rotation="0 0 0"
+    ></a-entity>
+  </a-scene>
+
+  <script>
+    AFRAME.registerComponent('look-at-model', {
+      tick: function () {
+        const flecha = this.el;
+        const cam = document.querySelector('[gps-camera]');
+        const modelo = document.querySelector('#modelo');
+
+        if (!cam.components['gps-camera'].currentCoords || !modelo.components['gps-entity-place'].attrValue) return;
+
+        const userCoords = cam.components['gps-camera'].currentCoords;
+        const targetCoords = modelo.components['gps-entity-place'].attrValue;
+
+        // Calcular ángulo de rumbo (bearing)
+        const toRad = deg => deg * Math.PI / 180;
+        const toDeg = rad => rad * 180 / Math.PI;
+
+        const dLon = toRad(targetCoords.longitude - userCoords.longitude);
+        const lat1 = toRad(userCoords.latitude);
+        const lat2 = toRad(targetCoords.latitude);
+
+        const y = Math.sin(dLon) * Math.cos(lat2);
+        const x = Math.cos(lat1) * Math.sin(lat2) -
+                  Math.sin(lat1) * Math.cos(lat2) * Math.cos(dLon);
+
+        const brng = (toDeg(Math.atan2(y, x)) + 360) % 360;
+
+        // Ajustar rotación Y de la flecha (rotación vertical = 0)
+        flecha.setAttribute('rotation', `0 ${brng} 0`);
+      }
+    });
+
+    // Activar el componente en la flecha
+    document.addEventListener('DOMContentLoaded', () => {
+      document.querySelector('#flecha').setAttribute('look-at-model', '');
+    });
+  </script>
+</body>
 </html>
