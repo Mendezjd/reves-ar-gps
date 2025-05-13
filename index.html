@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>AR GPS con Flecha</title>
+  <title>AR GPS con Flecha y Distancia</title>
   <script src="https://aframe.io/releases/1.3.0/aframe.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/ar.js@3.4.2/aframe/build/aframe-ar.min.js"></script>
 </head>
@@ -14,16 +14,16 @@
     <!-- Cámara con GPS -->
     <a-camera gps-camera rotation-reader></a-camera>
 
-    <!-- Modelo en coordenadas GPS -->
+    <!-- Modelo 3D en una ubicación -->
     <a-entity
       id="modelo"
       gps-entity-place="latitude: 3.340616; longitude: -76.529395"
       gltf-model="LogoCelsiaGLB3.glb"
-      scale="0.5 0.5 0.5"
-      position="0 1022 0"
+      scale="1 1 1"
+      position="0 0 0"
     ></a-entity>
 
-    <!-- Flecha indicadora (apunta al modelo) -->
+    <!-- Flecha indicadora -->
     <a-entity
       id="flecha"
       position="0 0 -2"
@@ -31,42 +31,69 @@
       material="color: red"
       rotation="0 0 0"
     ></a-entity>
+
+    <!-- Texto de distancia -->
+    <a-text
+      id="texto-distancia"
+      value="Calculando distancia..."
+      position="0 1.5 -2"
+      align="center"
+      color="#FFFFFF"
+      width="4"
+    ></a-text>
   </a-scene>
 
   <script>
-    AFRAME.registerComponent('look-at-model', {
+    // Componente personalizado para actualizar la flecha y la distancia
+    AFRAME.registerComponent('flecha-dinamica', {
       tick: function () {
-        const flecha = this.el;
         const cam = document.querySelector('[gps-camera]');
         const modelo = document.querySelector('#modelo');
+        const flecha = document.querySelector('#flecha');
+        const texto = document.querySelector('#texto-distancia');
 
-        if (!cam.components['gps-camera'].currentCoords || !modelo.components['gps-entity-place'].attrValue) return;
+        if (!cam.components['gps-camera'].currentCoords) return;
 
-        const userCoords = cam.components['gps-camera'].currentCoords;
-        const targetCoords = modelo.components['gps-entity-place'].attrValue;
+        const user = cam.components['gps-camera'].currentCoords;
+        const objetivo = modelo.components['gps-entity-place'].attrValue;
 
-        // Calcular ángulo de rumbo (bearing)
+        // Calcular distancia Haversine
+        const R = 6371000; // Radio tierra en metros
         const toRad = deg => deg * Math.PI / 180;
-        const toDeg = rad => rad * 180 / Math.PI;
+        const dLat = toRad(objetivo.latitude - user.latitude);
+        const dLon = toRad(objetivo.longitude - user.longitude);
+        const lat1 = toRad(user.latitude);
+        const lat2 = toRad(objetivo.latitude);
 
-        const dLon = toRad(targetCoords.longitude - userCoords.longitude);
-        const lat1 = toRad(userCoords.latitude);
-        const lat2 = toRad(targetCoords.latitude);
+        const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+                  Math.cos(lat1) * Math.cos(lat2) *
+                  Math.sin(dLon/2) * Math.sin(dLon/2);
+        const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+        const distancia = R * c;
 
+        // Mostrar texto de distancia
+        texto.setAttribute('value', `Distancia: ${distancia.toFixed(1)} m`);
+
+        // Cambiar color si está cerca (< 20m)
+        if (distancia < 20) {
+          flecha.setAttribute('material', 'color: green');
+        } else {
+          flecha.setAttribute('material', 'color: red');
+        }
+
+        // Calcular rumbo
         const y = Math.sin(dLon) * Math.cos(lat2);
         const x = Math.cos(lat1) * Math.sin(lat2) -
                   Math.sin(lat1) * Math.cos(lat2) * Math.cos(dLon);
+        const brng = (Math.atan2(y, x) * 180 / Math.PI + 360) % 360;
 
-        const brng = (toDeg(Math.atan2(y, x)) + 360) % 360;
-
-        // Ajustar rotación Y de la flecha (rotación vertical = 0)
         flecha.setAttribute('rotation', `0 ${brng} 0`);
       }
     });
 
-    // Activar el componente en la flecha
-    document.addEventListener('DOMContentLoaded', () => {
-      document.querySelector('#flecha').setAttribute('look-at-model', '');
+    // Activar comportamiento al cargar
+    window.addEventListener('DOMContentLoaded', () => {
+      document.querySelector('#flecha').setAttribute('flecha-dinamica', '');
     });
   </script>
 </body>
